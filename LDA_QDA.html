@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+	svg{
+		margin:10px 0 0 20px;
+		border:1px solid black;
+		font-weight:bold;
+		font-size:1.2em;
+	}
+	#d1{
+		float:right;
+		width:800px;
+		height:700px;
+		margin:0 40px 0 0;
+	}
+	#d2{
+		width:800px;
+		height:200px;
+		text-align:center;
+		padding:40px 0;
+	}
+	#d2 > span{
+		font-size:2em;
+		font-weight:bold;
+		margin:0 0 0 10px;
+	}
+	#btn, #btn1{
+		width:100px;
+		height:80px;
+		margin:0 0 0 20px;
+		border-radius:5px;
+	}
+	#btn{
+		margin:0 0 0 240px;
+	}
+	#d3, #d4{
+		width:800px;
+		height:300px;
+		margin:10px 0 0 0;
+	}
+	#d5, #d6, #d7, #d8{
+		width:399px;
+		height:300px;
+		float:left;
+		border:2px solid black;
+		font-size:1.5em;
+		text-align:center;
+	}
+	#d9, #d10{
+		width:800px;
+		height:200px;
+		padding:30px 0 0 180px;
+		border:0;
+		font-weight:bold;
+	}
+	#d10 > span{
+		font-size:1.2em;
+	}
+	#d10 > span:nth-child(1){
+		margin:0 0 0 100px;
+	}
+	input[type*=text]{
+		width:150px;
+		height:50px;
+	}
+	#s1{
+		margin:0 120px 0 0;
+	}
+	#btn2, #btn3{
+		width:430px;
+		height:50px;
+		font-size:1.5em;
+		border-radius:10px;
+		text-align:center;
+	}
+	#btn4, #btn5{
+		width:60px;
+		height:50px;
+		font-size:1.2em;
+		border-radius:10px;
+	}
+	#btn4{
+		margin:0 0 0 20px;
+	}
+	#btn5{
+		margin:0 0 0 180px;
+	}
+</style>
+</head>
+<body>
+	<svg id="svg"></svg>
+	<div id="d1">
+		<div id="d2">
+			<span>선형 분별(LDA) & 2차 분별(QDA)</span>
+			<br>
+			<br>
+			<button class="btn btn-danger" id="btn" onclick="type1()">데이터 입력</button>
+			<button class="btn btn-danger" id="btn1" onclick="type2()">데이터 클릭</button>
+			<button class="btn btn-info" id="btn5" onclick="reset()">reset</button>
+		</div>
+		<div id="d3" style="display:block;">
+			<div id="d5">
+				<span>data1</span>
+				<br>
+				<span id="s1">x1</span> <span id="s2">x2</span>
+				<br>
+				<input type="text" id="t1" value="-1.48"/>
+				<input type="text" id="t2" value="-6.7"/>
+				<input type="text" id="t3" value="-4.19"/>
+				<input type="text" id="t4" value="-6.19"/>
+				<input type="text" id="t5" value="-7.7"/>
+				<input type="text" id="t6" value="6.32"/>
+				<input type="text" id="t7" value="7.63"/>
+				<input type="text" id="t8" value="-7.84"/>
+			</div>
+			<div id="d6">
+				<span>data2</span>
+				<br>
+				<span id="s1">x1</span> <span id="s2">x2</span>
+				<br>
+				<input type="text" id="t9" value="-0.04"/>
+				<input type="text" id="t10" value="4.1"/>
+				<input type="text" id="t11" value="-2.11"/>
+				<input type="text" id="t12" value="2.73"/>
+				<input type="text" id="t13" value="0.26"/>
+				<input type="text" id="t14" value="-1.17"/>
+				<input type="text" id="t15" value="4.93"/>
+				<input type="text" id="t16" value="1.49"/>
+			</div>
+		</div>
+		<div id="d4" style="display:none;">
+			<div id="d7">
+				<span>data1</span>
+				<br>
+				<span id="s1">x1</span> <span id="s2">x2</span>
+				<br>
+				<input type="text" id="t21" value="-6"/>
+				<input type="text" id="t22" value="4"/>
+				<input type="text" id="t23" value="-3"/>
+				<input type="text" id="t24" value="5"/>
+				<input type="text" id="t25" value="4"/>
+				<input type="text" id="t26" value="-5"/>
+				<input type="text" id="t27" value="6"/>
+				<input type="text" id="t28" value="-3"/>
+			</div>
+			<div id="d8">
+				<span>data2</span>
+				<br>
+				<span id="s1">x1</span> <span id="s2">x2</span>
+				<br>
+				<input type="text" id="t29" value="6"/>
+				<input type="text" id="t30" value="4"/>
+				<input type="text" id="t31" value="3"/>
+				<input type="text" id="t32" value="5"/>
+				<input type="text" id="t33" value="-3"/>
+				<input type="text" id="t34" value="-3"/>
+				<input type="text" id="t35" value="-6"/>
+				<input type="text" id="t36" value="-6"/>
+			</div>
+		</div>
+		<div id="d9" style="display:block">
+				<button class="btn btn-primary" id="btn2" onClick="drawData(1)">입력 완료</button>
+		</div>
+		<div id="d10" style="display:none">
+				<span>data1</span>&nbsp&nbsp<input id="type1" type="radio" name="test" value="type1" checked="on">&nbsp&nbsp
+				<span>data2</span>&nbsp&nbsp<input id="type2" type="radio" name="test" value="type2">			
+				<button class="btn btn-warning" id="btn4" onClick="clickPoint()">click</button>
+				<br>
+				<hr color="white">	
+				<button class="btn btn-success" id="btn3" onClick="drawData(2)">입력 완료</button>
+		</div>
+	</div>
+	<script>
+		function type1() {
+			document.getElementById("d3").style.display="block";
+			document.getElementById("d4").style.display="none";
+			document.getElementById("d9").style.display="block";
+			document.getElementById("d10").style.display="none";
+		}
+		function type2() {
+			document.getElementById("d3").style.display="none";
+			document.getElementById("d4").style.display="block";
+			document.getElementById("d9").style.display="none";
+			document.getElementById("d10").style.display="block";
+		}
+		
+	  	var svgW = 600;
+		var svgH = 700;
+		var margin = {top: 40, right: 30, bottom: 30, left: 30};
+		var graphW = svgW - margin.left - margin.right;
+		var graphH = svgH - margin.top - margin.bottom;
+		var svg = d3.select("#svg")
+					.attr("width", svgW)
+					.attr("height", svgH);
+		var xScale = create_xAxis(svg, -10, 10);
+		var yScale = create_yAxis(svg, -10, 10);
+		
+		//초기화면
+		var data = [ [1,2], [3,1], [5,2], [3,3], [7,6], [8,4], [9,6], [8,8] ];
+		draw_point(data, xScale, yScale);
+		function draw_point(test, xScale, yScale) {
+			svg.selectAll("circle")
+			   .data(test)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(d) { return xScale(d[0]) })
+			   .attr("cy", function(d) { return yScale(d[1])+margin.top })
+			   .attr("r", 6)
+			   .style("fill", function(d,i) { return i >= test.length / 2 ? "blue" : "red" } )
+		}
+		
+		/////// 분별함수 그래프 관련 함수 ////////
+		
+		var meanVector1 = createArray(2, 1); //data1 평균 벡터
+		var meanVector2 = createArray(2, 1); //data2 평균 벡터
+		var meanVector1_T = createArray(1, 2); //data1 평균 전치 벡터
+		var meanVector2_T = createArray(1, 2); //data2 평균 전치 벡터
+		var covMatrix1 = createArray(2, 2); //data1 공분산 행렬
+		var covMatrix2 = createArray(2, 2); //data2 공분산 행렬
+		var covMatrix1_I = createArray(2, 2); //data1 공분산 역행렬 
+		var covMatrix2_I = createArray(2, 2); //data2 공분산 역행렬 
+		var ln_x1 = 0.5; //x1 확률 자연로그
+		var ln_x2 = 0.5; //x2 확률 자연로그
+		
+		//분별함수
+		function dFunction(meanVector1, meanVector2, meanVector1_T, meanVector2_T, covMatrix1, covMatrix2,
+						   covMatrix1_I, covMatrix2_I, ln_x1, ln_x2, LinearArr, QuadraticArr) {
+			if(isEqual(covMatrix1, covMatrix2)) { //공분산행렬이 같은경우 1차함수
+				var temp = createArray(2, 1);
+				Minus(meanVector1, meanVector2, temp);
+				var temp2 = createArray(2, 1);
+				Multiple(covMatrix1_I, temp, temp2);
+				var temp3 = createArray(1, 2);
+				Transpose(temp2, temp3);
+				
+				var temp4 = createArray(1, 2);
+				Multiple(meanVector1_T, covMatrix1_I, temp4);
+				var temp5 = createArray(1, 1);
+				Multiple(temp4, meanVector1, temp5);
+				var a = temp5[0][0] / 2;
+				
+				var temp6 = createArray(1, 2);
+				Multiple(meanVector2_T, covMatrix2_I, temp6);
+				var temp7 = createArray(1, 1);
+				Multiple(temp6, meanVector2, temp7);
+				var b = temp7[0][0] / 2;
+				var constant = Math.log(ln_x1) - Math.log(ln_x2) - a + b;
+				
+				LinearArr[0] = temp3[0][0]; //x1의 계수
+				LinearArr[1] = temp3[0][1]; //x2의 계수
+				LinearArr[2] = constant; //상수
+			}
+			else { //공분산행렬이 다른경우 2차함수
+				var temp = createArray(2, 2);
+				Minus(covMatrix1_I, covMatrix2_I, temp);
+				constantMultiple(temp, - 1 / 2);
+				
+				var temp2 = createArray(1, 2);
+				Multiple(meanVector1_T, covMatrix1_I, temp2);
+				var temp3 = createArray(1, 2);
+				Multiple(meanVector2_T, covMatrix2_I, temp3);
+				var temp4 = createArray(1, 2);
+				Minus(temp2, temp3, temp4);
+				
+				var temp5 = createArray(1, 2);
+				Multiple(meanVector1_T, covMatrix1_I, temp5);
+				var temp6 = createArray(1, 1);
+				Multiple(temp5, meanVector1, temp6);
+				var temp7 = createArray(1, 2);
+				Multiple(meanVector2_T, covMatrix2_I, temp7);
+				var temp8 = createArray(1, 1);
+				Multiple(temp7, meanVector2, temp8);
+				var temp9 = createArray(1, 1);
+				Minus(temp6, temp8, temp9);
+				constantMultiple(temp9, - 1 / 2);
+				
+				var temp10 = Math.log(det(covMatrix1) / det(covMatrix2)) / 2;
+				
+				QuadraticArr[0] = temp[0][0]; //x1제곱의 계수
+				QuadraticArr[1] = temp[1][1]; //x2제곱의 계수
+				QuadraticArr[2] = temp4[0][0]; //x1의 계수
+				QuadraticArr[3] = temp4[0][1]; //x2의 계수
+				QuadraticArr[4] = temp9[0][0] - temp10; //상수항
+				QuadraticArr[5]	= temp[0][1] + temp[1][0]; //x1x2계수
+			}
+		}
+		
+		//2차원 배열 생성
+		function createArray(row, column) {
+			var x = new Array(row);
+			for(var i = 0; i < row; i++) {
+				x[i] = new Array(column);
+			}
+			return x;
+		}
+		
+		//평균, 공분산  구하기
+		function calculate(input, output1, output2, type) {
+			var idx;
+			var j;
+			if(type == 1) {
+				idx = 0;
+			}
+			else if(type == 2) {
+				idx = 4;
+			}
+			
+			var sum1 = 0;
+			var sum2 = 0;
+			for(var i = idx; i < idx + 4; i++) {
+				sum1 += input[i][0];
+				sum2 += input[i][1];
+			}
+			var avg1 = sum1 / (input.length / 2);
+			var avg2 = sum2 / (input.length / 2);
+			
+			output1[0][0] = avg1;
+			output1[1][0] = avg2;
+			
+			output2[0][0] = covariance(input, idx, 0, 0, avg1, avg1);
+			output2[0][1] = covariance(input, idx, 0, 1, avg1, avg2);
+			output2[1][0] = covariance(input, idx, 1, 0, avg2, avg1);
+			output2[1][1] = covariance(input, idx, 1, 1, avg2, avg2);
+		}
+		
+		//공분산
+		function covariance(input, idx, idx1, idx2, avg1, avg2) {
+			var sum = 0;
+			for(var i = idx; i < idx + 4; i++) {
+				var first = input[i][idx1] - avg1;
+				var second = input[i][idx2] - avg2;
+				sum += first * second;
+			}
+			var cov = sum / 3;
+			return cov;
+		}
+		
+		//전치행렬
+		function Transpose(input, output) {
+			var row = output.length;
+			var col = output[0].length;
+			for(var i = 0; i < row; i++) {
+				for(var j = 0; j < col; j++) {
+					output[i][j] = input[j][i];
+				}
+			}
+		}
+		
+		//역행렬
+		function Inverse(input, output) {
+			var a = input[0][0];
+			var b = input[0][1];
+			var c = input[1][0];
+			var d = input[1][1];	
+			var e = 1 / ((a * d) - (b * c));
+			output[0][0] = e * d;
+			output[0][1] = e * -c;
+			output[1][0] = e * -c;
+			output[1][1] = e * a;
+		}
+		
+		//행렬의 곱셈
+		function Multiple(input1, input2, output) {
+			for(var i = 0; i < input1.length; i++) {
+				for(var j = 0; j < input2[0].length; j++) {
+					output[i][j] = 0;
+					for(var k = 0; k < input1[0].length; k++) {
+						output[i][j] += input1[i][k] * input2[k][j];
+						output[i][j] = Math.round(output[i][j] * 1000) / 1000;
+					}
+				}
+			}
+		}
+		
+		//행렬의 뺄셈
+		function Minus(input1, input2, output) {
+			for(var i = 0; i < input1.length; i++) {
+				for(var j = 0; j < input2[0].length; j++) {
+					output[i][j] = input1[i][j] - input2[i][j];
+				}
+			}
+		}
+		
+		//행렬의 덧셈
+		function Plus(input1, input2, output) {
+			for(var i = 0; i < input1.length; i++) {
+				for(var j = 0; j < input2[0].length; j++) {
+					output[i][j] = input1[i][j] + input2[i][j];
+				}
+			}
+		}
+		
+		//공분산 행렬 같은지 여부 확인
+		function isEqual(covMatrix1, covMatrix2) {
+			for(var i = 0; i < 2; i++) {
+				for(var j = 0; j < 2; j++) {
+					if(covMatrix1[i][j] != covMatrix2[i][j]) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+		
+		//행렬에 상수 곱하기
+		function constantMultiple(input, constant) {
+			for(var i = 0; i < input.length; i++) {
+				for(var j = 0; j < input[0].length; j++) {
+					input[i][j] *= constant;
+				}
+			}
+		}
+		
+		//행렬 determinant
+		function det(input){
+			var a = input[0][0];
+			var b = input[0][1];
+			var c = input[1][0];
+			var d = input[1][1];
+			return (a * d) - (b * c);
+		}
+		
+		/////// svg 그래프 관련 함수 ////////
+		
+		//x축 생성
+		function create_xAxis(object, start, end) {
+			var xScale = d3.scaleLinear()
+			   .domain([start, end])
+			   .range([margin.left, margin.left + graphW]);
+			var xAxis = d3.axisBottom(xScale);
+			var tx = margin.top + graphH / 2;
+			object.append("g")
+				  .attr("transform", "translate(0, "+tx+")")
+				  .attr("class", "x axis")
+				  .call(xAxis)
+			
+			return xScale;
+		}
+		
+		//y축 생성
+		function create_yAxis(object, start, end) {
+			var yScale = d3.scaleLinear()
+			   .domain([start, end])
+			   .range([graphH, 0]);
+			var yAxis = d3.axisLeft(yScale);
+			var ty = margin.left + graphW / 2;
+			object.append("g")
+				  .attr("transform", "translate("+ty+","+margin.top+")")
+				  .attr("class", "y axis")
+				  .call(yAxis)
+			
+			return yScale;
+		}
+		
+		//실제좌표를 svg그래프 상의 x좌표료 변환
+		function realToSvgX(x) {
+			return changeX(-10, 10, margin.left, margin.left + graphW, x);
+		}
+	
+		//실제좌표를 svg그래프 상의 y좌표료 변환
+		function realToSvgY(y) {
+			return changeY(-10, 10, margin.top, margin.top + graphH, y);
+		}   
+		
+		//svg그래프 상의 x좌표를 실제 좌표로 변환
+		function svgToRealX(x) {
+			var num = changeX(margin.left, margin.left + graphW, -10, 10, x); 
+			return Math.round(num * 100) / 100;
+		}
+		
+		//svg그래프 상의 y좌표를 실제 좌표로 변환		
+		function svgToRealY(y) {
+			var num = changeY(margin.top, margin.top + graphH, -10, 10, y);
+			return Math.round(num * 100) / 100;
+		}
+		
+		//x좌표 변경
+		function changeX(beforeXmin, beforeXmax, afterXmin, afterXmax, x) {
+			return (afterXmax - afterXmin) * (x - beforeXmin) / (beforeXmax - beforeXmin) + afterXmin;
+		}
+		
+		//y좌표 변경
+		function changeY(beforeYmin, beforeYmax, afterYmin, afterYmax, y) {
+			return (afterYmax - afterYmin) - (afterYmax - afterYmin) * (y - beforeYmin) / (beforeYmax - beforeYmin) + afterYmin;
+		}
+		
+		//숫자인지 아닌지 확인
+		function isNumber(value) {
+ 			 return typeof value === 'number' && isFinite(value);
+		}
+		
+		//1차 분별 함수 그리기
+		function draw_Linear(x1, x2, x3) {
+			for(var i=-10; i<=10; i+=0.01) {
+				var y1 = ((- x1) * i - x3) / x2;
+				var y2 = ((- x1) * (i + 0.01) - x3) / x2;
+				svg.append("line")
+				   .attr("x1", realToSvgX(i))
+				   .attr("y1", realToSvgY(y1))
+				   .attr("x2", realToSvgX(i+0.01))
+				   .attr("y2", realToSvgY(y2))
+				   .attr("stroke", "black")
+				   .attr("stroke-width", "2px")
+			}
+		}
+		
+		//2차 분별 함수
+		function distinctFunction(x, x1, x2, x3, x4, x5, x6, arr) {
+			var num = x1 * x * x + x3 * x + x5;
+			var a = x2; 
+			var b = x4 + x6 * x;
+			var c = num;
+			var D = b * b - (4 * a * c);
+			var first = (-b + Math.sqrt(D)) / (2 * a);
+			var second = (-b - Math.sqrt(D)) / (2 * a);
+			arr[0] = first;
+			arr[1] = second;
+			arr[2] = D;
+		}
+		
+		//2차 분별 함수 그리기
+		function draw_Quadratic(x1, x2, x3, x4, x5, x6) {
+			var a = x1;
+			var b = x2;
+			var c = x3;
+			var d = x4;
+			var e = x5;
+			var f = x6;
+			for(var i=-10; i<=10; i+=0.01) {
+				var arr = new Array(3);
+				distinctFunction(i, a, b, c, d, e, f, arr);
+				var arr2 = new Array(3);
+				distinctFunction(i + 0.01, a, b, c, d, e, f, arr2);
+				
+				if(isNumber(arr[0]) && !isNumber(arr2[0])) {
+					svg.append("line")
+					   .attr("x1", realToSvgX(i))
+					   .attr("y1", realToSvgY(arr[0]))
+					   .attr("x2", realToSvgX(i))
+					   .attr("y2", realToSvgY(arr[1]))
+					   .attr("stroke", "black")
+					   .attr("stroke-width", "2px")
+				}
+				if(!isNumber(arr[0]) && isNumber(arr2[0])) {
+					svg.append("line")
+					   .attr("x1", realToSvgX(i))
+					   .attr("y1", realToSvgY(arr2[0]))
+					   .attr("x2", realToSvgX(i))
+					   .attr("y2", realToSvgY(arr2[1]))
+					   .attr("stroke", "black")
+					   .attr("stroke-width", "2px")
+				}
+				if(arr[2] < 0 || arr2[2] < 0) continue;
+				
+				svg.append("line")
+				   .attr("x1", realToSvgX(i))
+				   .attr("y1", realToSvgY(arr[0]))
+				   .attr("x2", realToSvgX(i+0.01))
+				   .attr("y2", realToSvgY(arr2[0]))
+				   .attr("stroke", "black")
+				   .attr("stroke-width", "2px")
+				  
+				svg.append("line")
+				   .attr("x1", realToSvgX(i))
+				   .attr("y1", realToSvgY(arr[1]))
+				   .attr("x2", realToSvgX(i+0.01))
+				   .attr("y2", realToSvgY(arr2[1]))
+				   .attr("stroke", "black")
+				   .attr("stroke-width", "2px")
+			}		
+		}
+		
+		var count1 = 0;
+		var count2 = 0;
+		//svg내 점 생성
+		function clickPoint() {
+			var check = document.getElementById("type1");
+			var color;
+			if($(check).prop("checked")) {
+				color = "#ECB2AF";
+			}
+			else {
+				color = "#9FA1F3";
+			}
+			
+			svg.on("click", function() {
+				var pos = d3.mouse(this);
+				if(color == "#ECB2AF") {
+					if(count1 >= 4) {
+						alert("점은 4개만 선택이 가능합니다");
+						return;
+					}
+					count1++;
+					document.getElementById("t"+(20 + 2 * count1 -1)).value = svgToRealX(pos[0]);
+					document.getElementById("t"+(20 + 2 * count1)).value = svgToRealY(pos[1]);
+				}
+				if(color == "#9FA1F3") {
+					if(count2 >= 4) {
+						alert("점은 4개만 선택이 가능합니다");
+						return;
+					}
+					count2++;
+					document.getElementById("t"+(28 + 2 * count2 -1)).value = svgToRealX(pos[0]);
+					document.getElementById("t"+(28 + 2 * count2)).value = svgToRealY(pos[1]);
+				}
+				if (pos[0] > margin.left && pos[0] < margin.left+graphW &&
+					pos[1] > margin.top && pos[1] < margin.top+graphH) {
+					svg.append("circle")
+					   .attr("cx", pos[0])
+					   .attr("cy", pos[1])
+					   .attr("r", 6)
+					   .style("fill", color)
+	            }
+			});
+		}
+		
+		//데이터 입력 후 포인트 표시
+		function drawData(type) {
+			count1 = 0;
+			count2 = 0;
+			svg.selectAll("line").remove();
+			
+			var circle = svg.selectAll("circle").data(data);
+			circle.exit().remove();
+			
+			var count = type == 1 ? 0 : 20;
+			for(var i=0; i<8; i++) {
+				for(var j=0; j<2; j++) {
+					count++;
+					data[i][j] = parseFloat(document.getElementById("t"+count).value);
+				}
+			}
+			
+			circle.enter().append("circle").attr("r", 0);
+
+	        circle.transition()
+	              .duration(500)
+	              .attr("cx", function(d) { return xScale(d[0]) })
+			      .attr("cy", function(d) { return yScale(d[1]) + margin.top })
+			      .attr("r", 6)
+			      .style("fill", function(d,i) { return i >= data.length / 2 ? "blue" : "red" } );
+	    	
+	        calculate(data, meanVector1, covMatrix1, 1);
+	        calculate(data, meanVector2, covMatrix2, 2);
+	        Transpose(meanVector1, meanVector1_T);
+	        Transpose(meanVector2, meanVector2_T);
+	        Inverse(covMatrix1, covMatrix1_I);
+	        Inverse(covMatrix2, covMatrix2_I);
+	        LinearArr = new Array(3);
+	        QuadraticArr = new Array(6);
+	        dFunction(meanVector1, meanVector2, meanVector1_T, meanVector2_T, covMatrix1, covMatrix2,
+					   covMatrix1_I, covMatrix2_I, ln_x1, ln_x2, LinearArr, QuadraticArr);
+	        
+			if(isEqual(covMatrix1, covMatrix2)) { 
+		        draw_Linear(LinearArr[0], LinearArr[1], LinearArr[2]);
+			}
+			else {
+		        draw_Quadratic(QuadraticArr[0], QuadraticArr[1], QuadraticArr[2], QuadraticArr[3], QuadraticArr[4], QuadraticArr[5]);
+			}
+		}
+		
+		//리셋 새로고침
+		function reset() {
+			window.location.reload();
+		}
+	</script>
+</body>
+</html>
